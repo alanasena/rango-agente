@@ -2,11 +2,6 @@
 
 from app.database import SessionLocal
 from app.models import Prato, Restaurante
-from app.seed import popular_banco
-
-
-def setup_module():
-    popular_banco()
 
 
 def test_tem_restaurantes_e_pratos():
