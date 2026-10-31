@@ -1,0 +1,15 @@
+# segredos (nunca sobem)
+.env
+
+# python
+__pycache__/
+.venv/
+*.pyc
+.pytest_cache/
+
+# banco local
+*.db
+
+# node
+node_modules/
+dist/
