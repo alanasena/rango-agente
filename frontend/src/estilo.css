@@ -1,0 +1,486 @@
+/* Identidade do Rangô
+   anil  = azul das chitas e azulejos  -> cor principal
+   caju  = amarelo do caju             -> ação (confirmar) e passo em andamento
+   folha = verde                       -> sucesso
+*/
+:root {
+  --anil: #23307a;
+  --anil-escuro: #18215a;
+  --caju: #f4b41a;
+  --caju-escuro: #c98d00;
+  --folha: #2e7d4f;
+  --papel: #f5f6fa;
+  --tinta: #191c30;
+  --tinta-suave: #555a75;
+  --nevoa: #dce0ec;
+  --erro: #b3261e;
+
+  --fonte-marca: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --fonte-texto: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--fonte-texto);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+:focus-visible {
+  outline: 3px solid var(--caju);
+  outline-offset: 2px;
+}
+
+.so-leitor-de-tela {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- estrutura ---------- */
+.pagina {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.cabecalho {
+  background: var(--anil);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.marca {
+  margin: 0;
+  font-family: var(--fonte-marca);
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.marca-o {
+  color: var(--caju);
+}
+
+.cabecalho-nota {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #c9cfee;
+}
+
+.conversa {
+  flex: 1;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---------- tela inicial ---------- */
+.inicio {
+  padding-top: 2rem;
+}
+
+.inicio-titulo {
+  margin: 0 0 0.5rem;
+  font-family: var(--fonte-marca);
+  font-weight: 800;
+  font-size: clamp(2.25rem, 7vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--anil);
+}
+
+.inicio-texto {
+  margin: 0 0 1.75rem;
+  max-width: 34rem;
+  color: var(--tinta-suave);
+  font-size: 1.0625rem;
+}
+
+.sugestoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sugestoes button {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--tinta);
+  background: #fff;
+  border: 1px solid var(--nevoa);
+  border-left: 4px solid var(--anil);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.sugestoes button:hover {
+  border-left-color: var(--caju);
+  background: #fffdf5;
+}
+
+/* ---------- mensagens ---------- */
+.balao-usuario {
+  align-self: flex-end;
+  max-width: 80%;
+  margin: 0;
+  background: var(--anil);
+  color: #fff;
+  padding: 0.625rem 1rem;
+  border-radius: 18px 18px 4px 18px;
+  white-space: pre-wrap;
+}
+
+.turno-agente {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.resposta-agente {
+  margin: 0;
+  white-space: pre-wrap;
+  max-width: 38rem;
+}
+
+.aviso-conexao {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: #fdecea;
+  color: var(--erro);
+}
+
+/* ---------- trilha do agente ---------- */
+.trilha {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.trilha-passo {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: 0.5rem;
+  padding-bottom: 0.75rem;
+}
+
+/* linha que liga um passo ao outro */
+.trilha-passo:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: calc(0.75rem - 1px);
+  top: 1.15rem;
+  bottom: -0.1rem;
+  width: 2px;
+  background: var(--nevoa);
+}
+
+.trilha-marca {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin: 0.4rem auto 0;
+  border-radius: 50%;
+  background: var(--anil);
+}
+
+.em-andamento .trilha-marca {
+  background: var(--caju);
+  box-shadow: 0 0 0 4px rgb(244 180 26 / 0.3);
+  animation: pulsar 1.2s ease-in-out infinite;
+}
+
+.com-erro .trilha-marca {
+  background: var(--erro);
+}
+
+@keyframes pulsar {
+  50% {
+    box-shadow: 0 0 0 7px rgb(244 180 26 / 0.1);
+  }
+}
+
+.trilha-texto {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.trilha-resumo {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+.com-erro .trilha-resumo {
+  color: var(--erro);
+}
+
+.trilha-detalhes summary {
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--anil);
+  width: fit-content;
+}
+
+.detalhes-lista {
+  list-style: none;
+  margin: 0.5rem 0 0.25rem;
+  padding: 0.25rem 0.875rem;
+  max-width: 30rem;
+  background: #fff;
+  border: 1px solid var(--nevoa);
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.detalhes-lista li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.4rem 0;
+}
+
+.detalhes-lista li + li {
+  border-top: 1px solid var(--papel);
+}
+
+.detalhes-nome {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.detalhes-info {
+  color: var(--tinta-suave);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.detalhes-colunas {
+  display: flex;
+  gap: 0.875rem;
+}
+
+.etiqueta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--folha);
+  background: #e4f2ea;
+  border-radius: 999px;
+  padding: 0 0.5rem;
+}
+
+/* ---------- comanda (o pedido sugerido) ---------- */
+.comanda {
+  max-width: 26rem;
+  background: #fff;
+  padding: 1.5rem 1.375rem 1.25rem;
+  filter: drop-shadow(0 6px 14px rgb(35 48 122 / 0.14));
+  /* bordas serrilhadas em cima e embaixo, como papel de comanda */
+  mask:
+    radial-gradient(circle at 8px 0, transparent 6px, #000 6.5px) top / 16px 51% repeat-x,
+    radial-gradient(circle at 8px 100%, transparent 6px, #000 6.5px) bottom / 16px 51% repeat-x;
+}
+
+.comanda-restaurante {
+  margin: 0 0 0.75rem;
+  font-family: var(--fonte-marca);
+  font-weight: 800;
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+  color: var(--anil);
+}
+
+.comanda-itens,
+.comanda-avisos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comanda-itens li,
+.comanda-contas div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.comanda-itens li {
+  padding: 0.25rem 0;
+}
+
+.comanda-itens li span:last-child,
+.comanda-contas dd {
+  white-space: nowrap;
+}
+
+.comanda-contas {
+  margin: 0.75rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 2px dashed var(--nevoa);
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.comanda-contas dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.comanda-total {
+  margin-top: 0.375rem;
+  font-family: var(--fonte-marca);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--tinta);
+}
+
+.comanda-avisos {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--caju-escuro);
+}
+
+.comanda-acao {
+  margin-top: 1.125rem;
+}
+
+.botao-confirmar {
+  width: 100%;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--tinta);
+  background: var(--caju);
+  border: 0;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+}
+
+.botao-confirmar:hover:not(:disabled) {
+  background: #ffc537;
+}
+
+.botao-confirmar:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.comanda-confirmado,
+.comanda-expirada,
+.comanda-erro {
+  margin: 0;
+  font-weight: 700;
+}
+
+.comanda-confirmado {
+  color: var(--folha);
+}
+
+.comanda-expirada {
+  color: var(--tinta-suave);
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+.comanda-erro {
+  color: var(--erro);
+  margin-bottom: 0.5rem;
+}
+
+.estado-expirada {
+  opacity: 0.55;
+}
+
+.estado-confirmado {
+  animation: carimbo 0.35s ease-out;
+}
+
+@keyframes carimbo {
+  from {
+    transform: scale(0.97);
+  }
+}
+
+/* ---------- caixa de mensagem ---------- */
+.compositor {
+  position: fixed;
+  inset: auto 0 0;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.875rem max(1.25rem, calc((100vw - 44rem) / 2 + 1.25rem));
+  background: linear-gradient(to top, var(--papel) 75%, transparent);
+}
+
+.compositor input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--nevoa);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--tinta);
+}
+
+.compositor input:focus {
+  border-color: var(--anil);
+  outline: none;
+}
+
+.compositor button {
+  font: inherit;
+  font-weight: 700;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--anil);
+  color: #fff;
+  cursor: pointer;
+}
+
+.compositor button:disabled {
+  background: #9aa1c7;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
