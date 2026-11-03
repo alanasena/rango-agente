@@ -1,0 +1,46 @@
+# Sobe o Rangô inteiro com um comando:  docker compose up --build
+#   tela  -> http://localhost:5173
+#   API   -> http://localhost:8000/docs
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      # Banco só para rodar no seu computador: não fica exposto para fora do Docker
+      POSTGRES_USER: rango
+      POSTGRES_PASSWORD: rango_local
+      POSTGRES_DB: rango
+    volumes:
+      - dados_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rango -d rango"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    env_file:
+      - path: ./backend/.env # é aqui que fica a sua GEMINI_API_KEY
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://rango:rango_local@db:5432/rango
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy # só sobe depois que o banco estiver pronto
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8000
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  dados_postgres:
