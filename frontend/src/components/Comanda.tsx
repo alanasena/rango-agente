@@ -11,8 +11,13 @@ export function Comanda({ pedido, confirmacao, aoConfirmar }: Props) {
   const temDesconto = pedido.desconto !== "R$ 0,00";
 
   return (
+    // a moldura carrega a sombra preta (a borda serrilhada cortaria a sombra se ficasse na comanda)
+    <div className="comanda-moldura">
     <section className={`comanda estado-${confirmacao.estado}`} aria-label="Pedido sugerido">
-      <h3 className="comanda-restaurante">{pedido.restaurante}</h3>
+      <header className="comanda-topo">
+        <p className="comanda-etiqueta">sua comanda</p>
+        <h3 className="comanda-restaurante">{pedido.restaurante}</h3>
+      </header>
 
       <ul className="comanda-itens">
         {pedido.itens.map((item, i) => (
@@ -81,5 +86,6 @@ export function Comanda({ pedido, confirmacao, aoConfirmar }: Props) {
         )}
       </div>
     </section>
+    </div>
   );
 }

@@ -63,3 +63,20 @@ def test_agente_nao_quebra_quando_gemini_cai():
     eventos = list(Agente(modelo).responder("quero pizza"))
     assert eventos[-1].tipo == "resposta"
     assert "sobrecarregado" in eventos[-1].texto
+
+
+def erro_400_pensamento():
+    return errors.ClientError(400, {"error": {"code": 400, "message": "thinking_level is not supported", "status": "INVALID_ARGUMENT"}})
+
+
+def test_pede_para_pensar_pouco():
+    modelo = criar_modelo([resposta_texto("Oi!")])
+    config = modelo._config(so_texto=False)
+    assert config.thinking_config.thinking_level.value.lower() == "low"
+
+
+def test_se_modelo_nao_aceita_ajuste_de_pensamento_segue_sem_ele():
+    modelo = criar_modelo([erro_400_pensamento(), resposta_texto("Oi!")])
+    assert modelo.enviar_mensagem("oi").texto == "Oi!"
+    assert modelo.nivel_pensamento is None
+    assert modelo._config(so_texto=False).thinking_config is None

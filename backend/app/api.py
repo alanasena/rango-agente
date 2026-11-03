@@ -18,6 +18,7 @@ mostrar "Buscando restaurantes..." na hora em que acontece.
 """
 
 import json
+import logging
 import os
 import time
 import uuid
@@ -33,6 +34,9 @@ from app.agente import Agente
 from app.database import Base, SessionLocal, engine
 from app.models import Restaurante
 from app.seed import popular_banco
+
+# Mostra no terminal (e nos logs do Render) quanto tempo o Gemini levou em cada resposta
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(name)s: %(message)s")
 
 MAXIMO_DE_CONVERSAS = 200  # guardadas na memória; as mais antigas saem primeiro
 TAMANHO_MAXIMO_MENSAGEM = 500  # evita textos gigantes gastando a cota do Gemini

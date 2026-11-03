@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180" fill="none" stroke="#FFF3E0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.2">
+  <!-- hambúrguer -->
+  <g transform="rotate(-12 40 38)">
+    <path d="M14 40 Q40 8 66 40 Z"/>
+    <path d="M12 48 Q22 44 32 48 T52 48 T68 48"/>
+    <rect x="14" y="54" width="52" height="8" rx="4"/>
+    <path d="M14 68 H66 Q62 78 40 78 Q18 78 14 68 Z"/>
+    <path d="M30 26 v1 M42 22 v1 M52 28 v1"/>
+  </g>
+  <!-- fatia de pizza -->
+  <g transform="rotate(14 132 46)">
+    <path d="M104 20 Q132 10 160 20 L132 82 Z"/>
+    <path d="M106 26 Q132 18 158 26"/>
+    <circle cx="124" cy="38" r="4"/>
+    <circle cx="140" cy="44" r="4"/>
+    <circle cx="131" cy="60" r="3"/>
+  </g>
+  <!-- copo com canudo -->
+  <g transform="rotate(8 40 140)">
+    <path d="M20 112 H60 L54 166 H26 Z"/>
+    <path d="M22 126 H58"/>
+    <path d="M44 112 L52 92 L62 92"/>
+  </g>
+  <!-- garfo -->
+  <g transform="rotate(-20 130 135)">
+    <path d="M130 110 V168"/>
+    <path d="M120 98 V116 Q120 124 130 124 Q140 124 140 116 V98"/>
+    <path d="M130 98 V116"/>
+  </g>
+  <!-- brilhos -->
+  <path d="M92 96 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 Z"/>
+  <path d="M164 104 v10 M159 109 h10"/>
+  <path d="M86 160 v8 M82 164 h8"/>
+</svg>

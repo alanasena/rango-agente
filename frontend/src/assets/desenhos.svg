@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" fill="#F9F1E4" stroke="#EC7520" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- hambúrguer -->
+  <g transform="rotate(-10 50 45)">
+    <path d="M20 42 Q50 10 80 42 Z"/>
+    <rect x="18" y="46" width="64" height="9" rx="4.5"/>
+    <path d="M20 59 H80 Q76 72 50 72 Q24 72 20 59 Z"/>
+    <path d="M38 28 v.1 M50 24 v.1 M62 30 v.1" stroke-width="4"/>
+  </g>
+  <!-- batata frita -->
+  <g transform="rotate(12 160 50)">
+    <path d="M146 20 v26 M156 14 v32 M166 18 v28 M176 22 v24" fill="none"/>
+    <path d="M140 42 H182 L176 84 H146 Z"/>
+    <path d="M150 58 q11 8 22 0" fill="none"/>
+  </g>
+  <!-- copo com canudo -->
+  <g transform="rotate(8 50 160)">
+    <path d="M30 128 H70 L64 190 H36 Z"/>
+    <path d="M28 128 Q50 118 72 128" />
+    <path d="M54 124 L60 104 L70 104" fill="none"/>
+    <path d="M36 150 H64" fill="none"/>
+  </g>
+  <!-- panelinha -->
+  <g transform="rotate(-8 160 160)">
+    <path d="M132 152 H188 V166 Q188 186 168 186 H152 Q132 186 132 166 Z"/>
+    <path d="M128 150 Q160 132 192 150 Z"/>
+    <path d="M150 128 q-4 -5 0 -10 M162 126 q-4 -5 0 -10 M174 128 q-4 -5 0 -10" fill="none"/>
+  </g>
+  <!-- brilhos -->
+  <path d="M108 100 l4 9 l9 4 l-9 4 l-4 9 l-4 -9 l-9 -4 l9 -4 Z"/>
+  <circle cx="104" cy="196" r="4"/>
+  <circle cx="205" cy="112" r="3"/>
+</svg>
