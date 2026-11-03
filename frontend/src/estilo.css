@@ -16,7 +16,7 @@
   --erro: #b3261e;
 
   --fonte-marca: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --fonte-texto: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --fonte-texto: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
 
   color-scheme: light;
 }
@@ -56,6 +56,9 @@ body {
 }
 
 .cabecalho {
+  position: sticky; /* fica preso no topo enquanto a conversa rola */
+  top: 0;
+  z-index: 10;
   background: var(--anil);
   color: #fff;
   padding: 0.75rem 1.25rem;
@@ -80,9 +83,50 @@ body {
 }
 
 .cabecalho-nota {
-  margin: 0;
+  margin: 0 0 0 auto;
   font-size: 0.8125rem;
   color: #c9cfee;
+}
+
+.botao-nova-conversa {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #fff;
+  background: transparent;
+  border: 2px solid var(--caju);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  cursor: pointer;
+}
+
+.botao-nova-conversa:hover:not(:disabled) {
+  background: var(--caju);
+  color: var(--tinta);
+}
+
+.botao-nova-conversa:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* No celular: nome e botão na mesma linha, aviso de dados fictícios embaixo */
+@media (max-width: 600px) {
+  .cabecalho {
+    row-gap: 0.25rem;
+    align-items: center;
+  }
+
+  .cabecalho-nota {
+    order: 3;
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 0.75rem;
+  }
+
+  .botao-nova-conversa {
+    margin-left: auto;
+  }
 }
 
 .conversa {

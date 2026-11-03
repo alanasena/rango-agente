@@ -7,7 +7,7 @@ import { TrilhaDoAgente } from "./components/TrilhaDoAgente";
 import { useConversa } from "./useConversa";
 
 export default function App() {
-  const { turnos, ocupado, erroConexao, acordando, enviar, confirmar } = useConversa();
+  const { turnos, ocupado, erroConexao, acordando, enviar, confirmar, novaConversa } = useConversa();
   const fimDaLista = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,6 +21,16 @@ export default function App() {
           Rang<span className="marca-o">ô</span>
         </h1>
         <p className="cabecalho-nota">Restaurantes e preços fictícios, projeto de portfólio</p>
+        {turnos.length > 0 && (
+          <button
+            className="botao-nova-conversa"
+            onClick={novaConversa}
+            disabled={ocupado}
+            title={ocupado ? "Espere o Rangô terminar de responder" : undefined}
+          >
+            Nova conversa
+          </button>
+        )}
       </header>
 
       <main className="conversa" aria-live="polite">

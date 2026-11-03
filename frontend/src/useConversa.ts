@@ -119,5 +119,18 @@ export function useConversa() {
     [garantirConversa],
   );
 
-  return { turnos, ocupado, erroConexao, acordando, enviar, confirmar };
+  // Botão "Nova conversa": limpa a tela e pede uma conversa nova para a API
+  const novaConversa = useCallback(async () => {
+    if (ocupado) return;
+    setTurnos([]);
+    setErroConexao(null);
+    conversaId.current = null;
+    try {
+      await garantirConversa();
+    } catch {
+      setErroConexao("O servidor do Rangô não respondeu. Recarregue a página para tentar de novo.");
+    }
+  }, [ocupado, garantirConversa]);
+
+  return { turnos, ocupado, erroConexao, acordando, enviar, confirmar, novaConversa };
 }
