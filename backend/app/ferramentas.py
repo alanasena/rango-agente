@@ -32,8 +32,13 @@ def buscar_restaurantes(
     tempo_maximo_min: int | None = None,
     tem_vegetariano: bool = False,
     tem_vegano: bool = False,
+    limite: int = 10,
 ) -> dict:
-    """Busca restaurantes ABERTOS que atendem aos filtros."""
+    """Busca restaurantes ABERTOS que atendem aos filtros.
+
+    Devolve no máximo `limite` restaurantes (os de nota mais alta), para não mandar
+    uma lista enorme pro Gemini e gastar cota à toa.
+    """
     with SessionLocal() as db:
         consulta = db.query(Restaurante).filter(Restaurante.aberto.is_(True))
 
@@ -48,7 +53,8 @@ def buscar_restaurantes(
         elif tem_vegetariano:
             consulta = consulta.filter(Restaurante.pratos.any(Prato.vegetariano.is_(True)))
 
-        restaurantes = consulta.order_by(Restaurante.nota.desc()).all()
+        total_encontrado = consulta.count()
+        restaurantes = consulta.order_by(Restaurante.nota.desc()).limit(limite).all()
 
         resultado = [
             {
@@ -68,7 +74,13 @@ def buscar_restaurantes(
             "restaurantes": [],
             "mensagem": "Nenhum restaurante aberto encontrado com esses filtros.",
         }
-    return {"restaurantes": resultado}
+    resposta = {"restaurantes": resultado}
+    if total_encontrado > len(resultado):
+        resposta["mensagem"] = (
+            f"Mostrando os {len(resultado)} de nota mais alta, de {total_encontrado} encontrados. "
+            "Use mais filtros para refinar."
+        )
+    return resposta
 
 
 # ---------------------------------------------------------------------------

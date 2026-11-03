@@ -86,8 +86,9 @@ DECLARACOES_FERRAMENTAS = [
             "properties": {
                 "tipo_cozinha": {
                     "type": "string",
-                    "description": "Ex.: vegetariana, vegana, nordestina, japonesa, pizza, "
-                    "hamburguer, lanches, caseira, italiana.",
+                    "description": "Tipos que existem: vegetariana, vegana, nordestina, japonesa, "
+                    "chinesa, pizza, italiana, hamburguer, lanches, caseira, frutos do mar, "
+                    "churrasco, árabe, saudável, açaí, sobremesas, café.",
                 },
                 "nota_minima": {"type": "number", "description": "De 0 a 5."},
                 "tempo_maximo_min": {"type": "integer", "description": "Tempo máximo de entrega em minutos."},

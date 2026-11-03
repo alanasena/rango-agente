@@ -53,6 +53,12 @@ def test_busca_sem_resultado_avisa():
     assert "Nenhum" in resultado["mensagem"]
 
 
+def test_busca_devolve_no_maximo_10():
+    resultado = buscar_restaurantes()
+    assert len(resultado["restaurantes"]) == 10
+    assert "Mostrando os 10" in resultado["mensagem"]
+
+
 def test_busca_ordena_pela_nota():
     notas = [r["nota"] for r in buscar_restaurantes()["restaurantes"]]
     assert notas == sorted(notas, reverse=True)
