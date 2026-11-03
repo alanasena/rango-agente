@@ -5,6 +5,18 @@ const URL_API = (import.meta.env.VITE_API_URL ?? "http://localhost:8000").replac
 
 export class ConversaNaoEncontrada extends Error {}
 
+/** Erro com uma mensagem que pode ser mostrada para a pessoa (ex.: limite de mensagens). */
+export class ErroDaApi extends Error {}
+
+async function mensagemDeErro(resposta: Response, padrao: string): Promise<string> {
+  try {
+    const dados = await resposta.json();
+    return typeof dados.detail === "string" ? dados.detail : padrao;
+  } catch {
+    return padrao;
+  }
+}
+
 export async function criarConversa(): Promise<string> {
   const resposta = await fetch(`${URL_API}/conversas`, { method: "POST" });
   if (!resposta.ok) throw new Error("Não deu para conectar com o Rangô.");
@@ -42,7 +54,9 @@ export async function enviarMensagem(
     body: JSON.stringify({ texto }),
   });
   if (resposta.status === 404) throw new ConversaNaoEncontrada();
-  if (!resposta.ok || !resposta.body) throw new Error("O Rangô não conseguiu responder.");
+  if (!resposta.ok || !resposta.body) {
+    throw new ErroDaApi(await mensagemDeErro(resposta, "O Rangô não conseguiu responder."));
+  }
 
   const leitor = resposta.body.getReader();
   const decodificador = new TextDecoder();

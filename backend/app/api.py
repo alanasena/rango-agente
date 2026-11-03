@@ -19,11 +19,12 @@ mostrar "Buscando restaurantes..." na hora em que acontece.
 
 import json
 import os
+import time
 import uuid
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict, deque
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -35,6 +36,8 @@ from app.seed import popular_banco
 
 MAXIMO_DE_CONVERSAS = 200  # guardadas na memória; as mais antigas saem primeiro
 TAMANHO_MAXIMO_MENSAGEM = 500  # evita textos gigantes gastando a cota do Gemini
+# Quando o site estiver público, isso impede que uma pessoa sozinha gaste toda a sua cota
+LIMITE_MENSAGENS_POR_HORA = int(os.getenv("LIMITE_MENSAGENS_POR_HORA", "30"))
 
 
 def criar_modelo_gemini():
@@ -68,6 +71,7 @@ app.add_middleware(
 # Trocável nos testes (lá usamos o modelo falso)
 app.state.fabrica_de_modelo = criar_modelo_gemini
 app.state.conversas = OrderedDict()  # conversa_id -> Agente
+app.state.mensagens_por_ip = defaultdict(deque)  # ip -> horários das últimas mensagens
 
 
 # ---------------------------------------------------------------------------
@@ -80,6 +84,27 @@ def pegar_agente(conversa_id: str) -> Agente:
     if agente is None:
         raise HTTPException(status_code=404, detail="Conversa não encontrada. Comece uma nova.")
     return agente
+
+
+def ip_de_quem_chamou(request: Request) -> str:
+    # Na hospedagem, o IP real vem no fim do cabeçalho X-Forwarded-For
+    encaminhado = request.headers.get("x-forwarded-for", "")
+    if encaminhado:
+        return encaminhado.split(",")[-1].strip()
+    return request.client.host if request.client else "desconhecido"
+
+
+def checar_limite(request: Request) -> None:
+    agora = time.monotonic()
+    horarios = app.state.mensagens_por_ip[ip_de_quem_chamou(request)]
+    while horarios and agora - horarios[0] > 3600:
+        horarios.popleft()
+    if len(horarios) >= LIMITE_MENSAGENS_POR_HORA:
+        raise HTTPException(
+            status_code=429,
+            detail="Você mandou muitas mensagens em pouco tempo. Tenta de novo daqui a pouco.",
+        )
+    horarios.append(agora)
 
 
 def formato_sse(dados: dict) -> str:
@@ -104,8 +129,9 @@ def nova_conversa():
 
 
 @app.post("/conversas/{conversa_id}/mensagens")
-def enviar_mensagem(conversa_id: str, mensagem: NovaMensagem):
+def enviar_mensagem(conversa_id: str, mensagem: NovaMensagem, request: Request):
     agente = pegar_agente(conversa_id)
+    checar_limite(request)
 
     def transmitir():
         for evento in agente.responder(mensagem.texto.strip()):

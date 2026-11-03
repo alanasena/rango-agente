@@ -7,7 +7,7 @@ import { TrilhaDoAgente } from "./components/TrilhaDoAgente";
 import { useConversa } from "./useConversa";
 
 export default function App() {
-  const { turnos, ocupado, erroConexao, enviar, confirmar } = useConversa();
+  const { turnos, ocupado, erroConexao, acordando, enviar, confirmar } = useConversa();
   const fimDaLista = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,6 +24,11 @@ export default function App() {
       </header>
 
       <main className="conversa" aria-live="polite">
+        {acordando && (
+          <p className="aviso-acordando">
+            Ligando o servidor. Na primeira visita isso pode levar até 1 minuto.
+          </p>
+        )}
         {erroConexao && <p className="aviso-conexao">{erroConexao}</p>}
         {turnos.length === 0 && <Inicio aoEscolher={enviar} />}
 

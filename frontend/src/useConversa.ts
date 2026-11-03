@@ -1,6 +1,6 @@
 // Toda a lógica da conversa fica aqui; os componentes só desenham.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ConversaNaoEncontrada, confirmarPedido, criarConversa, enviarMensagem } from "./api";
+import { ConversaNaoEncontrada, ErroDaApi, confirmarPedido, criarConversa, enviarMensagem } from "./api";
 import type { EventoAgente, Turno, TurnoAgente } from "./tipos";
 
 let contador = 0;
@@ -10,6 +10,8 @@ export function useConversa() {
   const [turnos, setTurnos] = useState<Turno[]>([]);
   const [ocupado, setOcupado] = useState(false);
   const [erroConexao, setErroConexao] = useState<string | null>(null);
+  // O servidor grátis "dorme" quando ninguém usa e leva até 1 minuto para acordar
+  const [acordando, setAcordando] = useState(false);
   const conversaId = useRef<string | null>(null);
 
   const garantirConversa = useCallback(async () => {
@@ -18,9 +20,16 @@ export function useConversa() {
   }, []);
 
   useEffect(() => {
-    garantirConversa().catch(() =>
-      setErroConexao("O servidor do Rangô não respondeu. Confira se a API está ligada."),
-    );
+    const aviso = setTimeout(() => setAcordando(true), 2500);
+    garantirConversa()
+      .catch(() =>
+        setErroConexao("O servidor do Rangô não respondeu. Recarregue a página para tentar de novo."),
+      )
+      .finally(() => {
+        clearTimeout(aviso);
+        setAcordando(false);
+      });
+    return () => clearTimeout(aviso);
   }, [garantirConversa]);
 
   const atualizarAgente = (id: string, mudar: (t: TurnoAgente) => TurnoAgente) =>
@@ -79,11 +88,12 @@ export function useConversa() {
           conversaId.current = null;
           await tentar();
         }
-      } catch {
-        atualizarAgente(idAgente, (t) => ({
-          ...t,
-          texto: t.texto ?? "Perdi a conexão com o servidor. Manda a mensagem de novo, por favor.",
-        }));
+      } catch (erro) {
+        const mensagem =
+          erro instanceof ErroDaApi
+            ? erro.message
+            : "Perdi a conexão com o servidor. Manda a mensagem de novo, por favor.";
+        atualizarAgente(idAgente, (t) => ({ ...t, texto: t.texto ?? mensagem }));
       } finally {
         atualizarAgente(idAgente, (t) => ({ ...t, terminou: true }));
         setOcupado(false);
@@ -109,5 +119,5 @@ export function useConversa() {
     [garantirConversa],
   );
 
-  return { turnos, ocupado, erroConexao, enviar, confirmar };
+  return { turnos, ocupado, erroConexao, acordando, enviar, confirmar };
 }

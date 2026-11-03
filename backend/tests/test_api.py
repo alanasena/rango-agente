@@ -19,6 +19,7 @@ def ids():
 
 def cliente_com_roteiro(roteiro):
     app.state.conversas.clear()
+    app.state.mensagens_por_ip.clear()
     app.state.fabrica_de_modelo = lambda: ModeloFalso(list(roteiro))
     return TestClient(app)
 
@@ -79,3 +80,24 @@ def test_mensagem_vazia_ou_gigante_e_recusada():
 
     assert cliente.post(url, json={"texto": ""}).status_code == 422
     assert cliente.post(url, json={"texto": "a" * 501}).status_code == 422
+
+
+def test_limite_de_mensagens_por_hora(monkeypatch):
+    import app.api as api
+
+    monkeypatch.setattr(api, "LIMITE_MENSAGENS_POR_HORA", 2)
+    cliente = cliente_com_roteiro([falar("1"), falar("2"), falar("3")])
+    conversa_id = cliente.post("/conversas").json()["conversa_id"]
+    url = f"/conversas/{conversa_id}/mensagens"
+
+    assert cliente.post(url, json={"texto": "oi"}).status_code == 200
+    assert cliente.post(url, json={"texto": "oi"}).status_code == 200
+    assert cliente.post(url, json={"texto": "oi"}).status_code == 429
+
+
+def test_endereco_do_neon_e_ajustado():
+    from app.database import ajustar_url
+
+    assert ajustar_url("postgresql://u:s@host/db?sslmode=require") == "postgresql+psycopg://u:s@host/db?sslmode=require"
+    assert ajustar_url("postgres://u:s@host/db") == "postgresql+psycopg://u:s@host/db"
+    assert ajustar_url("sqlite:///./rango.db") == "sqlite:///./rango.db"
